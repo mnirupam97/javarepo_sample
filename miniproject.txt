@@ -1,0 +1,242 @@
+import java.io.FileReader;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+import au.com.bytecode.opencsv.CSVReader;
+
+public class Utility {
+
+	  public static void load(){
+		  int lnum=0;
+		  PreparedStatement ps= null;
+		  try{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+			
+			
+			String jdbc_insert= "insert into complaints values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			ps=con.prepareStatement(jdbc_insert);
+			String inputCsvFile="D:\\complaints.csv";
+			//FileReader fr= new FileReader(inputCsvFile);
+			CSVReader Reader=new CSVReader( new FileReader(inputCsvFile));
+			String [] nextLine;
+			
+			while((nextLine=Reader.readNext())!=null)
+			{
+				lnum++;
+				ps.setString(1, nextLine[0]);
+				ps.setString(2, nextLine[1]);
+				ps.setString(3, nextLine[2]);
+				ps.setString(4, nextLine[3]);
+				ps.setString(5, nextLine[4]);
+				ps.setString(6, nextLine[5]);
+				ps.setString(7, nextLine[6]);
+				ps.setString(8, nextLine[7]);
+				ps.setString(9, nextLine[8]);
+				ps.setString(10, nextLine[9]);
+				ps.setString(11, nextLine[10]);
+				ps.setString(12, nextLine[11]);
+				ps.setString(13, nextLine[12]);
+				ps.setString(14, nextLine[13]);
+				ps.addBatch();
+				if(lnum==200){
+				
+					int[] Records= ps.executeBatch();
+					System.out.println(Records.length);
+				}
+			}
+			
+			int[] Records= ps.executeBatch();
+			System.out.println(Records.length);
+			}
+			catch(BatchUpdateException e)
+				{
+					 //Records= e.getUpdateCounts();
+				}
+		  catch(Exception e)
+			{
+				 //Records= e.getUpdateCounts();
+			}
+	
+			}
+		
+
+	  public static void query1()
+	  {
+		 try
+		 {
+			 Class.forName("oracle.jdbc.driver.OracleDriver");
+		 
+			Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+			String sql="select issue,complaintid from complaints where complaintid=?";
+			
+			PreparedStatement ps1= con.prepareStatement(sql);
+			Scanner sc= new Scanner(System.in);
+			System.out.println("Enter the complaint id");
+			String cid=sc.nextLine();
+			
+			ps1.setString(1,cid );
+			ps1.execute();
+			ResultSet rs=ps1.executeQuery();
+			 while(rs.next())
+			 {
+				 System.out.printf("\n%20s \t %20s",rs.getString(1),rs.getString(2));
+
+			 }
+			//System.out.println("Total Records inserted:"+Records.length);
+			//ps.close();
+			con.commit();
+			con.close();
+			
+	  }
+		 catch(Exception e)
+			{
+				 //Records= e.getUpdateCounts();
+			}
+
+	  }
+	  
+	  public static void query2(){
+			
+			try{Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+			
+			String sql="select issue,company from complaints where company=?";
+			
+			PreparedStatement ps1= con.prepareStatement(sql);
+			Scanner sc= new Scanner(System.in);
+			System.out.println("Enter the bank name");
+			String cid=sc.nextLine();
+			
+			ps1.setString(1,cid );
+			ps1.execute();
+			ResultSet rs=ps1.executeQuery();
+			 while(rs.next())
+			 {
+				 
+				 System.out.printf("\n%20s \t %20s",rs.getString(1),rs.getString(2));
+				 /*System.out.println(rs.getString(1));
+				 System.out.println(rs.getString(2));*/
+			 }
+			//System.out.println("Total Records inserted:"+Records.length);
+			//ps.close();
+			con.commit();
+			con.close();
+			}catch(Exception e)
+			{
+				 //Records= e.getUpdateCounts();
+			}
+			
+		}
+	  
+	  public static void query3()
+	  {
+		  try
+		  {
+			  Class.forName("oracle.jdbc.driver.OracleDriver");
+		  
+			
+			Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+			String sql="select issue,complaintid from complaints where companyresp ='Closed with explanation' or companyresp='Closed'";
+			
+			PreparedStatement ps2= con.prepareStatement(sql);
+			//Scanner sc= new Scanner(System.in);
+			//System.out.println("Enter the bank name");
+		//	String cid=sc.nextLine();
+			
+			//ps2.setString(1,cid );
+			
+			ResultSet rs=ps2.executeQuery();
+			 while(rs.next())
+			 {
+				/* System.out.println(rs.getString(1));
+				 System.out.println("  ");
+				 System.out.println(rs.getString(2));*/
+				 System.out.printf("\n%20s %20s",rs.getString(1),rs.getString(2));
+			 }
+			//System.out.println("Total Records inserted:"+Records.length);
+			//ps.close();
+			con.commit();
+			con.close();
+	  }
+		  catch(Exception e)
+			{
+				 //Records= e.getUpdateCounts();
+			}
+}
+	  public static void query4()
+	  {
+		  try
+		  {
+			  Class.forName("oracle.jdbc.driver.OracleDriver");
+		  
+			
+			Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+			String sql="select issue,timelyresp from complaints where timelyresp ='Yes'";
+			
+			PreparedStatement ps2= con.prepareStatement(sql);
+			//Scanner sc= new Scanner(System.in);
+			//System.out.println("Enter the bank name");
+		//	String cid=sc.nextLine();
+			
+			//ps2.setString(1,cid );
+			
+			ResultSet rs=ps2.executeQuery();
+			 while(rs.next())
+			 {
+				/* System.out.println(rs.getString(1));
+				 System.out.println("  ");
+				 System.out.println(rs.getString(2));*/
+				 System.out.printf("\n%20s %20s",rs.getString(1),rs.getString(2));
+			 }
+			//System.out.println("Total Records inserted:"+Records.length);
+			//ps.close();
+			con.commit();
+			con.close();
+	  }
+		  catch(Exception e)
+			{
+				 //Records= e.getUpdateCounts();
+			}
+}
+}
+-----------------------
+
+import java.util.Scanner;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		Utility.load();
+		
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter the choice\n 1:Query \n 2:Query \n3:Query\n4:Query");
+		int choice=sc.nextInt();
+		switch(choice)
+		{
+		case 1:
+		{
+			Utility.query1();
+		}
+		break;
+		case 2:
+			Utility.query2();
+		break;
+		case 3:
+			Utility.query3();
+		break;
+		case 4:
+			Utility.query4();
+			break;
+		default:
+			System.out.println("Enter the correct choice");
+		}
+	}
+
+}
